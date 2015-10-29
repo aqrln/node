@@ -163,7 +163,7 @@ test(function serverResponseTimeoutWithPipeline(cb) {
     const c = net.connect({ port: port, allowHalfOpen: true }, function() {
       c.write('GET /1 HTTP/1.1\r\nHost: localhost\r\n\r\n');
       c.write('GET /2 HTTP/1.1\r\nHost: localhost\r\n\r\n');
-      c.write('GET /3 HTTP/1.1\r\nHost: localhost\r\n\r\n');
+      //c.write('GET /3 HTTP/1.1\r\nHost: localhost\r\n\r\n');
     });
   }));
 });
