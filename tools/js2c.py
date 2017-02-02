@@ -37,11 +37,14 @@ import sys
 import string
 
 
-def ToCString(contents):
-  step = 20
-  slices = (contents[i:i+step] for i in xrange(0, len(contents), step))
-  slices = map(lambda s: ','.join(str(ord(c)) for c in s), slices)
+def ToCArray(elements, step=10):
+  slices = (elements[i:i+step] for i in xrange(0, len(elements), step))
+  slices = map(lambda s: ','.join(str(x) for x in s), slices)
   return ',\n'.join(slices)
+
+
+def ToCString(contents):
+  return ToCArray(map(ord, contents), step=20)
 
 
 def ReadFile(filename):
@@ -186,7 +189,7 @@ NODE_NATIVES_MAP = """\
 SOURCES = """\
 static const uint8_t {escaped_id}_name[] = {{
 {name}}};
-static const uint8_t {escaped_id}_data[] = {{
+static const {ctype} {escaped_id}_data[] = {{
 {data}}};
 """
 
@@ -214,7 +217,16 @@ def JS2C(source, target):
     lines = ReadFile(str(s))
     lines = ExpandConstants(lines, consts)
     lines = ExpandMacros(lines, macros)
-    data = ToCString(lines)
+
+    # Treat non-ASCII as UTF-8 and convert it to UTF-16.
+    if any(ord(c) > 127 for c in lines):
+      ctype = 'uint16_t'
+      data = map(ord, lines.decode('utf-8').encode('utf-16be'))
+      data = [data[i] * 256 + data[i+1] for i in xrange(0, len(data), 2)]
+      data = ToCArray(data)
+    else:
+      ctype = 'char'
+      data = ToCString(lines)
 
     # On Windows, "./foo.bar" in the .gyp file is passed as "foo.bar"
     # so don't assume there is always a slash in the file path.
