@@ -16,16 +16,16 @@ using v8::String;
 template <typename T, size_t N, T P>
 struct ExternalStringResource;
 
-template <size_t N, const char (&P)[N]>
-struct ExternalStringResource<const char[N], N, P>
+template <size_t N, const char* P>
+struct ExternalStringResource<const char*, N, P>
     : public String::ExternalOneByteStringResource {
   const char* data() const override { return P; }
   size_t length() const override { return N; }
   void Dispose() override { /* Default calls `delete this`. */ }
 };
 
-template <size_t N, const uint16_t (&P)[N]>
-struct ExternalStringResource<const uint16_t[N], N, P>
+template <size_t N, const uint16_t* P>
+struct ExternalStringResource<const uint16_t*, N, P>
     : public String::ExternalStringResource {
   const uint16_t* data() const override { return P; }
   size_t length() const override { return N; }
@@ -34,7 +34,7 @@ struct ExternalStringResource<const uint16_t[N], N, P>
 
 // id##_data is defined in node_natives.h.
 #define V(id) \
-  static ExternalStringResource<decltype(id##_data),                          \
+  static ExternalStringResource<decltype(&id##_data[0]),                      \
                                 arraysize(id##_data),                         \
                                 id##_data> id##_external_data;
 NODE_NATIVES_MAP(V)

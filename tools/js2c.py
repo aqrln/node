@@ -189,7 +189,7 @@ NODE_NATIVES_MAP = """\
 SOURCES = """\
 static const uint8_t {escaped_id}_name[] = {{
 {name}}};
-static const {ctype} {escaped_id}_data[] = {{
+static constexpr const {ctype} {escaped_id}_data[] = {{
 {data}}};
 """
 
