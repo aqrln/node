@@ -40,7 +40,7 @@ test(function serverKeepAliveTimeoutWithPipeline(cb) {
     requestCount++;
     res.end();
   });
-  server.setTimeout(100, (socket) => {
+  server.setTimeout(200, (socket) => {
     timeoutCount++;
     socket.destroy();
   });
@@ -78,7 +78,7 @@ test(function serverNoEndKeepAliveTimeoutWithPipeline(cb) {
     socket = req.socket;
     requestCount++;
   });
-  server.setTimeout(100, (socket) => {
+  server.setTimeout(200, (socket) => {
     timeoutCount++;
     socket.destroy();
   });
