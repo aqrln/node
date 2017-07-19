@@ -11,10 +11,10 @@ const server = http.createServer(common.mustCall((req, res) => {
   }
   setTimeout(() => {
     res.end('ok');
-  }, common.platformTimeout(500));
+  }, common.platformTimeout(800));
 }, 2));
 
-server.keepAliveTimeout = common.platformTimeout(200);
+server.keepAliveTimeout = common.platformTimeout(500);
 
 const agent = new http.Agent({
   keepAlive: true,
